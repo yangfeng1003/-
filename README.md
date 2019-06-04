@@ -6,9 +6,15 @@
 
 | js | html | css | es6 | 计算机网络 | other |
 | :-----------: | :---------: | :---------: | :---------: | :---------: | :---------: |
-| [:star:](#book-js) | [:shaved_ice:](#book-html) | [:sunny:](#book-css) | [:es:](#book-es6) |[:house:](#book-计算机网络) | [:wavy_dash:]() |
+| [:star:](#book-js) | [:shaved_ice:](#book-html) | [:sunny:](#book-css) | [:es:](#book-es6) |[:house:](#book-计算机网络) | [:wavy_dash:](#book-other) |
 
 <br>
+
+# :book: js
+
+# :book: html
+
+# :book: css
 
 # :book: es6
 - let const
@@ -18,7 +24,8 @@
 - promise
 
 
-# :book: js
+
+# :book: other
 
 ```js
 function Person(name,age){
