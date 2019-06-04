@@ -2,9 +2,11 @@
 - Let + const:命名声明的新方式
 - Arrows,箭头函数
 - Classes，类
-- Enhanced object literals，增强的对象字面值
 - Template strings：模板字符串
-- Destructuring：解构
+- Destructuring：解构赋值
+- 对象的扩展
+- 数组的扩展
+- 数值的扩展
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Iterators + for..of：遍历器
 - Generators：生成器
@@ -88,20 +90,11 @@ let skin = new SkinnedMesh();
 SkinnedMesh.defaultMatrix
 ```
 
-
-### 对象的拓展
-ES6中对象的使用方法得以拓展，主要包括以下几点：
-
-- 属性和方法可以简洁表示；
-- 允许以表达式的模式定义属性名；
-- 可以通过`__proto__`读取或设置当前对象的prototype对象;
-- 使用`Object.is({},{})`判断两个对象是否完全相对，类似于===;
-- `Object.assign(target, source1, source2)`合并对象；（浅拷贝）
-
 ### 模板字符串
 - 模板字符串定义在两个反撇号中；
 - 在模板字符串中可以直接换行，格式会得以保留；
 - 通过${}可以很方便的在模板字符串中添加变量；
+
 
 ### 解构赋值
 解构使用模式匹配的方法绑定变量和值。解构在绑定失败的时会实现软绑定，即没有匹配值时返回`undefined`
@@ -173,6 +166,38 @@ const [a,b,c,d,e] = 'hello'; //a "h",b "e",c "l",...
 let {length:len} = 'hello'; //len 5 
 
 ```
+
+
+### 对象的扩展
+ES6中对象的使用方法得以拓展，主要包括以下几点：
+
+- 属性和方法可以简洁表示；
+- 允许以表达式的模式定义属性名；
+- 可以通过`__proto__`读取或设置当前对象的prototype对象;
+- 使用`Object.is({},{})`判断两个对象是否完全相对，类似于===;
+- `Object.assign(target, source1, source2)`合并对象；（浅拷贝）
+
+
+### 数组的扩展
+转数组：from() of()
+查找数组：find() findIndex() includes()  (其他：filter every some)
+遍历: keys() values() entries()
+填充数组：fill() copyWithin()
+
+
+### 数值的扩展
+Number.isInteger() 判断整数 （如果接收的非数字，返回false，如'25'-->false）
+Number.MAX_SAFE_INTEGER  可以在计算中安全使用的最大整数，小于该值能精确表示
+Number.MIN_SAFE_INTEGER
+Number.isSafeInteger()   -(2^53 - 1) ~ 2^53 - 1,即最大最小安全整数之间
+Math.trunc() 返回整数部分
+Math.sign()  返回-1（负数），0，1（正数）。（如果接收的非数字，先转为数字然后返回-1/0/1，否则返回NaN ）
+Math.cbrt() 立方根
+is  2^53
+另：MAX_VALUE 是使用双精度浮点表示表示的最大数字。 大于该值即Infinity，介于安全值和Infinity之间数的无法精确表示。
+
+### 函数的扩展
+
 
 ### Iterators + For..Of
 
