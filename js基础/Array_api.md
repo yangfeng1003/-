@@ -1,6 +1,6 @@
 # Array的API
 
-## 转数组 from  of
+## 转化为数组 from  of
 
 ### from()
 > Array.from(arrayLike[, mapFn[, thisArg]])  

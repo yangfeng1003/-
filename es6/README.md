@@ -7,7 +7,7 @@
 - 对象的扩展
 - 数组的扩展
 - 数值的扩展
-*数值的扩展（箭头函数 默认参数 rest参数  扩展运算符 this 尾调用）*
+- 函数的扩展（箭头函数  默认参数  rest参数  扩展运算符  this  尾调用）
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Iterators + for..of：遍历器
 - Generators：生成器
@@ -179,22 +179,22 @@ ES6中对象的使用方法得以拓展，主要包括以下几点：
 - `Object.assign(target, source1, source2)`合并对象；（浅拷贝）
 
 
-### 数组的扩展
-转数组：from() of()
-查找数组：find() findIndex() includes()  (其他：filter every some)
-遍历: keys() values() entries()
-填充数组：fill() copyWithin()
+### [数组的扩展](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/Array_api.md)
+- 转化为数组：`from() of()`
+- 查找数组：  `find() findIndex() includes()`  (其他：filter every some)
+- 遍历:      `keys() values() entries()`
+- 填充数组：  `fill() copyWithin()`
 
 
 ### 数值的扩展
-Number.isInteger() 判断整数 （如果接收的非数字，返回false，如'25'-->false）
-Number.MAX_SAFE_INTEGER  可以在计算中安全使用的最大整数，小于该值能精确表示
-Number.MIN_SAFE_INTEGER
-Number.isSafeInteger()   -(2^53 - 1) ~ 2^53 - 1,即最大最小安全整数之间
-Math.trunc() 返回整数部分
-Math.sign()  返回-1（负数），0，1（正数）。（如果接收的非数字，先转为数字然后返回-1/0/1，否则返回NaN ）
-Math.cbrt() 立方根
-is  2^53
+1. `Number.isInteger()` &nbsp;&nbsp;判断整数 （如果接收的非数字，返回false，如'25'-->false）
+2. `Number.MAX_SAFE_INTEGER` / `Number.MIN_SAFE_INTEGER`
+可以在计算中安全使用的最大/最小整数，安全数能精确表示
+3. `Number.isSafeInteger()` &nbsp;&nbsp;范围是-(2^53 - 1) ~ 2^53 - 1,即最大最小安全整数之间
+4. `Math.trunc()` 返回整数部分
+5. `Math.sign()`  返回-1（负数），0，1（正数）。（如果接收的非数字，先转为数字然后返回-1/0/1，否则返回NaN ）
+6. `Math.cbrt()` 立方根
+
 另：MAX_VALUE 是使用双精度浮点表示表示的最大数字。 大于该值即Infinity，介于安全值和Infinity之间数的无法精确表示。
 
 ### 函数的扩展
