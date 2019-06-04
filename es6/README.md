@@ -28,8 +28,8 @@ ES6新特性列表
 
 
 ### Classes
-JavaScript中其实并不存在真正的类，ES6的类其实是基于原型链模拟面向对象的一种语法糖。其本质上可以看做是构造函数的另一种写法。与真的类一样，它支持`super`继承，实例，静态方法和`constructor`方法。
-<div style="max-height: 200px">
+JavaScript中其实并不存在真正的类，ES6的类其实是**基于原型链模拟面向对象的一种语法糖**。其本质上可以看做是构造函数的另一种写法。与真的类一样，它支持`super`继承，实例，静态方法和`constructor`方法。
+
 ```js
 // 定义类
 class Point {
@@ -37,7 +37,6 @@ class Point {
     this.x = x;
     this.y = y;
   }
-
   toString() {
     return '(' + this.x + ', ' + this.y + ')';
   }
@@ -50,12 +49,10 @@ class SkinnedMesh extends THREE.Mesh {
     // super表示父类的构造函数，用来新建父类的this对象,
     // 子类必须在constructor方法中调用super方法，否则新建实例时会报错。如果不调用super方法，子类就得不到this对象。
     super(geometry, materials);
-
     //在构造方法中绑定this,可以防止实例找不到this
     this.idMatrix = SkinnedMesh.defaultMatrix();
     this.bones = [];
     this.boneMatrices = [];
-    //...
   }
   
   // 非定义在this上的方法都会被直接定义在原型链上
@@ -82,9 +79,9 @@ class SkinnedMesh extends THREE.Mesh {
 // 类的所有实例共享一个原型对象
 let skin = new SkinnedMesh();
 // 静态方法需要直接通过类调用
-SkinnedMesh.defaultMatrix()
+SkinnedMesh.defaultMatrix
 ```
-</div>
+
 
 ### 对象的拓展
 ES6中对象的使用方法得以拓展，主要包括以下几点：
@@ -112,6 +109,7 @@ let b = 2;
 let c = 3;
 let x = point[0];
 let y = point[1];
+
 //现在
 let [a,b,c] = [1,2,3]; //a 1, b 2, c 3
 let [x,y] = point;
@@ -136,22 +134,23 @@ function f(){
 ```
 
 **对象解构**
-对象的解构赋值与数组有一个不同，数组的元素是按次序排列的，变量的取值由它的位置决定；而对象的属性没有次序，变量必须与属性同名，才能取到正确的值。
+
+对象的解构赋值与数组有一个不同，数组的元素是按次序排列的，变量的取值由它的位置决定。而对象的属性没有次序，变量必须与属性同名，才能取到正确的值。
+
 ```js
 var o = {p: 42, q: true};
 var {p, q} = o; //p 42,q true
 
 //无声明赋值
 ({a, b} = {a: 1, b: 2}); //通过解构，无需声明即可赋值一个变量。
-//（...）表达式前面需要一个分号，否则会当成上一行函数执行。
-// "()"的作用是使编译器区分解构语句中的{}和代码块中的{}，{a,b}是一个块而不是对象字面量，正如var {a, b} = {a: 1, b: 2}。
-
+//（...）表达式前面需要一个分号，否则会当成上一行函数执行。"()"的作用是使编译器区分解构语句中的{}和代码块中的{}，{a,b}是一个块而不是对象字面量，正如var {a, b} = {a: 1, b: 2}。
 
 //给新变量名赋值
 var {p: foo, q: bar} = o;  //foo 42, bar true
 
-//默认值  当要提取的对象没有对应的属性，变量就被赋予默认值。
+//默认值
 var {a = 10, b = 5} = {a: 3};
+
 //函数参数默认值
 function drawES2015Chart({size = 'big', cords = { x: 0, y: 0 } } = {}){}
 
