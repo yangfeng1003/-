@@ -21,7 +21,7 @@
 - let const
 - 模板字符串
 - 默认参数
-- [解构赋值]()
+- [解构赋值](https://github.com/yangfeng1003/Knowledge/blob/master/es6/README.md)
 - promise
 
 
