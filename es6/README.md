@@ -1,11 +1,11 @@
-ES6新特性列表
+## ES6新特性列表
+- Let + const:命名声明的新方式
 - Arrows,箭头函数
 - Classes，类
 - Enhanced object literals，增强的对象字面值
 - Template strings：模板字符串
 - Destructuring：解构
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
-- Let + const:命名声明的新方式
 - Iterators + for..of：遍历器
 - Generators：生成器
 - Unicode：更广泛的编码支持
@@ -21,6 +21,9 @@ ES6新特性列表
 - Reflect api：操作对象的新api
 - Tail calls:尾调用
 
+### Let 和 Const
+let在块级作用域内有效。const用于指定固定值`（如果是引用类型，其内容是可变的，因为没有改变引用地址）`
+不允许在定义前使用，也不允许重复定义
 
 ### 箭头函数
 箭头函数使用类似于`=>`这样的语法定义函数，不过其最大特点在于**和父作用域具有一样的this**。使用箭头函数时再也不用担心this跳来跳去了。
