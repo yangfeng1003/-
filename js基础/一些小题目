@@ -1,0 +1,14 @@
+一些小题目
+
+//用setTimeout实现setInterval
+```js
+timerFun();
+function timerFun(){
+    //要执行的操作
+    console.log(new Date());
+    var timer=setTimeout(function(){
+        timerFun();
+        clearTimeout(timer);
+    },2000);
+}
+```
