@@ -7,6 +7,7 @@
 - 对象的扩展
 - 数组的扩展
 - 数值的扩展
+*数值的扩展（箭头函数 默认参数 rest参数  扩展运算符 this 尾调用）*
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Iterators + for..of：遍历器
 - Generators：生成器
