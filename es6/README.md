@@ -99,7 +99,7 @@ ES6中对象的使用方法得以拓展，主要包括以下几点：
 
 ### 解构赋值
 解构使用模式匹配的方法绑定变量和值。解构在绑定失败的时会实现软绑定，即没有匹配值时返回`undefined`
-
+参考：https://www.cnblogs.com/koto/p/5865064.html
 **数组解构**
 ```js
 let point = [1,2,3];
@@ -159,7 +159,11 @@ function drawES2015Chart({size = 'big', cords = { x: 0, y: 0 } } = {}){}
 let {c, d, ...rest} = {c: 10, d: 20, e: 30, f: 40}; //c 10, d 20, rest { e: 30, f: 40 }
 
 ```
+**字符串解构**
+```js
+//将字符串转换成一个类似数组的对象
+const [a,b,c,d,e] = 'hello'; //a "h",b "e",c "l",...
+//字符串具有length属性
+let {length:len} = 'hello'; //len 5 
 
-
-**对象解构**
-**对象解构**
+```
