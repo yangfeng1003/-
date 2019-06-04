@@ -6,7 +6,7 @@
 
 | js | html | css | es6 | 计算机网络 | other |
 | :-----------: | :---------: | :---------: | :---------: | :---------: | :---------: |
-| [:star:](#pencil2-算法) | [:shaved_ice:](#computer-操作系统) | [:sunny:](#computer-操作系统) | [:es:](#book-es6) |[:house:](#computer-计算机网络) | [:wavy_dash:]() |
+| [:star:](#book-js) | [:shaved_ice:](#book-html) | [:sunny:](#book-css) | [:es:](#book-es6) |[:house:](#book-计算机网络) | [:wavy_dash:]() |
 
 <br>
 
@@ -19,8 +19,6 @@
 
 
 # :book: js
-
-# :pencil2: js
 
 ```js
 function Person(name,age){
