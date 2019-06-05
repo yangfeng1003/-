@@ -1,42 +1,42 @@
-## ES6新特性列表
+# ES6新特性列表
 - Let + const:命名声明的新方式
 - Arrows,箭头函数
 - Classes，类
 - Template strings：模板字符串
 - Destructuring：解构赋值
-- 对象的扩展
+- 对象的扩展（简洁表示  属性表达式  Object新增api）
 - 数组的扩展
 - 数值的扩展
-- 函数的扩展（箭头函数  默认参数  rest参数  扩展运算符  this  尾调用）
+- 函数的扩展（箭头函数  默认参数  rest参数与扩展运算符  尾调用）
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
-- Iterators + for..of：遍历器
+- Map + Set + Weakmap + Weakset：新的数据结构
+- Symbols：新的基本类型，独一无二的值
+- Iterators + for..of：遍历
 - Generators：生成器
 - Unicode：更广泛的编码支持
 - Modules：语言层面上支持的模块机制
 - Module loaders：模块加载器
-- Map + set + weakmap + weakset：新的数据结构
 - Proxies：代理器
-- Symbols：新的基本类型，独一无二的值
 - Subclassable built-ins：类的继承
-- Promises：
+- Promises
 - Math + number + string + array + object apis：拓展了一些内置对象的方法
 - Binary and octal literals：二进制八进制字面量
 - Reflect api：操作对象的新api
 - Tail calls:尾调用
 
-### Let 和 Const
+## Let 和 Const
 只在声明所在的块级作用域内有效。
 只能在声明后使用，不可重复定义。
 没有变量提升，都存在暂时性死区（temporal dead zone，简称 TDZ）。
 const用于指定固定值，因此必须初始化`（如果是引用类型，其属性内容是可变的，因为没有改变引用地址）`
 
 
-### 箭头函数
+## 箭头函数
 箭头函数使用类似于`=>`这样的语法定义函数，不过其最大特点在于**和父作用域具有一样的this**。（箭头函数中没有this。如果你在箭头函数中使用了this，那么该this一定就是外层的this）使用箭头函数时再也不用担心this跳来跳去了。
 此外如果箭头函数如果定义在另一个函数里面，箭头函数会共享它父函数的arguments变量。
 
 
-### Classes
+## Classes
 JavaScript中其实并不存在真正的类，ES6的类其实是**基于原型链模拟面向对象的一种语法糖**。其本质上可以看做是构造函数的另一种写法。与真的类一样，它支持`super`继承，实例，静态方法和`constructor`方法。
 
 ```js
@@ -91,13 +91,13 @@ let skin = new SkinnedMesh();
 SkinnedMesh.defaultMatrix
 ```
 
-### 模板字符串
+## 模板字符串
 - 模板字符串定义在两个反撇号中；
 - 在模板字符串中可以直接换行，格式会得以保留；
-- 通过${}可以很方便的在模板字符串中添加变量；
+- 通过${ }可以很方便的在模板字符串中添加变量；
 
 
-### 解构赋值
+## 解构赋值
 解构使用模式匹配的方法绑定变量和值。解构在绑定失败的时会实现软绑定，即没有匹配值时返回`undefined`
 
 **数组解构**
@@ -128,9 +128,7 @@ function f(){
 
 //剩余数组
 //当解构一个数组时，可以使用剩余模式，将数组剩余部分赋值给一个变量
-[a, ...b] = [1, 2, 3]; //a 1, b [2,3]
-//注意：如果剩余元素右侧有逗号[a, ...b,]，会抛出 SyntaxError，因为剩余元素必须是数组的最后一个元素。
-
+[a, ...b] = [1, 2, 3]; //a 1, b [2,3] 注意：...b必须是数组的最后一个元素，右侧不能逗号
 ```
 
 **对象解构**
@@ -169,24 +167,39 @@ let {length:len} = 'hello'; //len 5
 ```
 
 
-### 对象的扩展
-ES6中对象的使用方法得以拓展，主要包括以下几点：
+## 对象的扩展
+**1. 简洁表示：**
+```js
+let o = 1,k = 2;
+let es5 = {
+    o:o,
+    k:k,
+    methodes5:function(){ }
+};
+let es6 = {
+    o,   //属性简写
+    k,
+    methodes6(){}   //方法简写
+};
+```
+**2. 属性表达式：**
+属性名可以使用表达式形式
 
-- 属性和方法可以简洁表示；
-- 允许以表达式的模式定义属性名；
+**3. ES6中对象新增的api：**
 - 可以通过`__proto__`读取或设置当前对象的prototype对象;
-- 使用`Object.is({},{})`判断两个对象是否完全相对，类似于===;
-- `Object.assign(target, source1, source2)`合并对象；（浅拷贝）
+- 使用`Object.is({},{})`判断两个对象是否完全相等，类似===;
+- `Object.assign(target, source1, source2)`合并对象；（1. 浅拷贝 2. 只包括对象自身可枚举的属性）
+- `Object.entries(obj)` 遍历，返回键值对数组。（与for-in区别在于 for-in也枚举原型链中的属性）
 
 
-### [数组的扩展](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/Array_api.md)
+## [数组的扩展](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/Array_api.md)
 - 转化为数组：`from() of()`
 - 查找数组：  `find() findIndex() includes()`  (其他：filter every some)
 - 遍历:      `keys() values() entries()`
 - 填充数组：  `fill() copyWithin()`
 
 
-### 数值的扩展
+## 数值的扩展
 1. `Number.isInteger()` &nbsp;&nbsp;判断整数 （如果接收的非数字，返回false，如'25'-->false）
 2. `Number.MAX_SAFE_INTEGER` / `Number.MIN_SAFE_INTEGER`
 可以在计算中安全使用的最大/最小整数，安全数能精确表示
@@ -197,24 +210,155 @@ ES6中对象的使用方法得以拓展，主要包括以下几点：
 
 另：MAX_VALUE 是使用双精度浮点表示表示的最大数字。 大于该值即Infinity，介于安全值和Infinity之间数的无法精确表示。
 
-### 函数的扩展
+## 函数的扩展
+#### ...的使用（rest与扩展运算符）
+**1. Rest剩余参数**
+(1) Rest 参数接受函数的多余参数，组成一个数组，放在形参的最后
+(2) Rest参数和arguments对象的区别：
+	1. rest参数只包括那些没有给出名称的参数，arguments包含所有参数
+	2. arguments 对象是伪数组，而rest参数是真正的数组
+		从 arguments 转向数组:Array.prototype.slice.call(arguments);
+	3. arguments 对象拥有一些自己额外的功能
+(3)Rest参数可以被解构
+(4)函数的length属性不包含rest
+```js
+function input2(a,b,...params){
+    console.log(params)
+}
+input2(1,2,3,4)  //[3,4]
+
+function func(a, b, ...rest) {}
+func.length // 2
+```
+
+**2. 扩展运算符**(与rest刚好是互逆的)
+```js
+arr1 = [1,2,3]
+arr2 = [4,5,6]
+arr3 = [...arr1, ...arr2] //[1,2,3,4,5,6] 
+```
+
+#### 尾调用与尾递归
+**尾调用**     
+指某个函数的最后一步是调用另一个函数。    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;函数在调用的时候会在调用栈（call stack）中存有记录，每一条记录叫做一个调用帧（call frame），每调用一个函数，就向栈中push一条记录，函数执行结束后依次向外弹出，直到清空调用栈。   
+**尾调用优化：**     
+最后一步 return（）一个函数，且没有额外与外层函数其他变量的运算，那么就不需要保留外层函数的调用记录，只要直接用内层函数的调用记录取代外层函数的调用记录就可以了，**调用栈中始终只保持了一条调用帧**。     
+意义：节省很大一部分的内存
+
+**尾递归**       
+指最后调用函数自身      
+**尾递归优化：**     
+最后一步函数与其他变量进行运算，改为将**需要运算的变量作为最后调用函数的参数**。    
+意义：**节省内存，避免栈溢出，提升性能**.
+```js
+function factorial (num) {
+    if (num === 1) return 1;
+    return num * factorial(num - 1);
+}
+factorial(500000);   // 溢出 Uncaught RangeError: Maximum call stack size exceeded
+
+//改写
+function factorial (num, total) {
+    if (num === 1) return total;
+    return factorial(num - 1, num * total);  // 尾递归优化
+}
+factorial(500000, 1); 
+
+//继续改写，保证函数只有一个参数
+function factorial (n, total = 1) {
+  if (n === 1) return total;
+  return factorial(n - 1, n * total);
+}
+factorial(5) // 120 函数此时只有一个参数
+```
+
+## Map + Set + Weakmap + Weakset：新的数据结构
+
+**Set** 对象允许存储任何类型的唯一值。
+```js
+//add() delete() has() clear() size属性
+var s = new Set();
+s.add("hello").add("goodbye").add("hello");
+console.log(s); // Set { 'hello', 'goodbye' }
+console.log(s.size); // 2;
+console.log(s.has("hello")); // true;
+```
+**WeakSet** 结构与 Set 类似，也是不重复的值的集合,但是WeakSet的成员只能存放对象引用，不能存放值。   
+此外WeakSet中的对象值都是弱引用，如果没有其他的变量或属性引用这个对象值, 则这个对象值会被当成垃圾回收掉. 所以WeakSet对象是无法被枚举的, 没有办法拿到它包含的所有元素。 没有clear()  size
+```js
+var ws = new WeakSet();
+let aa = {};
+ws.add({ data: 42 });
+ws.add(aa);
+console.log('ws',ws);              //ws WeakSet { [items unknown] }
+console.log(ws.has('data'));       //false
+console.log(ws.has({ data: 42 })); //false
+console.log(ws.has(aa));           //true  上面两种写法错误，这里存的是对象的引用
+```
+**Map** 对象也是键值对的集合，但是Map对象的“键”范围不限于字符串，各种类型的值（包括对象）都可以当作键。
+```js
+//set()  get()  has()   delete()  clear() size属性
+var m = new Map([['hello', 42],[s, 34]]); // 注意初始化赋值是一个数组形式，而且元素也是[]形式
+m.set([1,2,3],11);
+console.log(m); // Map {'hello' => 42, Set { 'hello', 'goodbye' } => 34, [ 1, 2, 3 ] => 11  }
+console.log(m.get(s)); // 34
+console.log(m.size); // 3
+```
+**WeakMap** 结构与Map结构类似，其中的键是弱引用的。其键必须是对象，而值可以是任意的。   
+此外WeakMap的键是弱引用。因此WeakMap 的 key 是不可枚举的。 没有clear()  size
+```js
+var wm = new WeakMap();
+wm.set(s, { extra: 42 });
+console.log(wm); // WeakMap { [items unknown] }
+console.log(wm.get(s)); // { extra: 42 }
+```
 
 
-### Iterators + For..Of
-
-
-### Generators
 
 
 
-### Modules
-### Map Set WeakMap WeakSet
+## Symbols：新的基本类型，独一无二的值
+
+## Iterators + For..Of
+遍历器（Iterator）是一种接口，为各种不同的数据结构提供统一的访问机制。在ES6中，有三类数据结构原生具备Iterator接口：数组、某些类似数组的对象、Set和Map结构。调用这个接口，就会返回一个遍历器对象。
+作用：
+- 为各种数据结构，提供一个统一的、简便的访问接口
+- 使得数据结构的成员能够按某种次序排列
+- ES6创造了一种新的遍历命令for...of循环，`for...of实质就是使用Iterator接口`
+
+Iterator的遍历过程：（1）创建一个指针对象，指向当前数据结构的起始位置。也就是说，遍历器对象本质上，就是一个指针对象。（2）第一次调用指针对象的`next方法`，可以将指针指向数据结构的第一个成员。不断调用指针对象的next方法，直到它指向数据结构的结束位置。每一次调用next方法，都会返回数据结构的当前成员的信息（`一个包含value和done两个属性的对象`，value属性是当前成员的值，done属性是一个布尔值，表示遍历是否结束）。
+```js
+//对象自定义iterator接口 要求：实现遍历从start到end的属性的元素
+let obj = {
+    start:[1,2,3],
+    end:[4,5],
+    [Symbol.iterator](){
+        let index = 0;
+        let arr = this.start.concat(this.end);
+        return {
+            next () {    //必须返回一个next()方法
+                return {
+                    value:arr[index++],
+                    done:index > arr.length
+                }
+            }
+        }
+    }
+};
+//检验
+for(let key of obj){
+    console.log(key); // 1 2 3 4 5
+}
+```
 
 
-### Proxies
-### Symbols
 
-### Promise
-### Reflect API
-
-### Tail Calls
+## Generators
+## Modules
+## Map Set WeakMap WeakSet
+## Proxies
+## Symbols
+## Promise
+## Reflect API
+## Tail Calls
