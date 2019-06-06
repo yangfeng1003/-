@@ -5,8 +5,8 @@
 - Template strings：模板字符串
 - Destructuring：解构赋值
 - 对象的扩展（简洁表示  属性表达式  Object新增api）
-- 数组的扩展
-- 数值的扩展
+- 数组的扩展 
+- 数值的扩展 (二进制八进制字面量 Number Math)
 - 函数的扩展（箭头函数  默认参数  rest参数与扩展运算符  尾调用）
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Map + Set + Weakmap + Weakset：新的数据结构
@@ -20,14 +20,13 @@
 - Subclassable built-ins：类的继承
 - Promises
 - Math + number + string + array + object apis：拓展了一些内置对象的方法
-- Binary and octal literals：二进制八进制字面量
 - Reflect api：操作对象的新api
-- Tail calls:尾调用
+
 
 ## Let 和 Const
 只在声明所在的块级作用域内有效。
 只能在声明后使用，不可重复定义。
-没有变量提升，都存在暂时性死区（temporal dead zone，简称 TDZ）。
+没有变量提升，都存在暂时性死区（temporal dead zone，简称 TDZ）.  
 const用于指定固定值，因此必须初始化`（如果是引用类型，其属性内容是可变的，因为没有改变引用地址）`
 
 
@@ -37,59 +36,51 @@ const用于指定固定值，因此必须初始化`（如果是引用类型，�
 
 
 ## Classes
-JavaScript中其实并不存在真正的类，ES6的类其实是**基于原型链模拟面向对象的一种语法糖**。其本质上可以看做是构造函数的另一种写法。与真的类一样，它支持`super`继承，实例，静态方法和`constructor`方法。
-
+JavaScript中其实并不存在真正的类，ES6的类其实是**基于原型链模拟面向对象的一种语法糖**。
 ```js
 // 定义类
-class Point {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-  toString() {
-    return '(' + this.x + ', ' + this.y + ')';
-  }
+// 定义类
+class Parent {
+    constructor(name = 'father') {
+        //constructor方法是类的默认构造方法，通过new命令生成对象实例时，自动调用该方法。
+        //一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。
+        this.name = name;
+    }
+
+    //对属性的操作，注意这里不是真正的function
+    get name1(){ //获取age属性时调用此方法
+        console.log('get parent name is -- '+this.name);
+    }
+    set name1(newName){
+        this.name = newName;
+        console.log('name changed to -- '+newName);
+    }
+
+    //静态方法 static 只能通过类名调用,该方法不会被实例继承
+    static tell(){
+        console.log('tell.....');
+    }
 }
 // 通过extends关键字实现继承
-class SkinnedMesh extends THREE.Mesh {
-  //constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。
-  //一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。
-  constructor(geometry, materials) {
-    // super表示父类的构造函数，用来新建父类的this对象,
-    // 子类必须在constructor方法中调用super方法，否则新建实例时会报错。如果不调用super方法，子类就得不到this对象。
-    super(geometry, materials);
-    //在构造方法中绑定this,可以防止实例找不到this
-    this.idMatrix = SkinnedMesh.defaultMatrix();
-    this.bones = [];
-    this.boneMatrices = [];
-  }
-  
-  // 非定义在this上的方法都会被直接定义在原型链上
-  update(camera) {
-    //...
-    // super在此处作为对象，在普通方法中，指向父类的原型对象；在静态方法中，指向父类。
-    super.update();
-  }
-  // 可以使用get和set关键字，对某个属性设置存值函数和取值函数
-  get boneCount() {
-  // 类的方法内部如果含有this，它默认指向类的实例
-    return this.bones.length;
-  }
-  set matrixType(matrixType) {
-    this.idMatrix = SkinnedMesh[matrixType]();
-  }
-  
-  // 加上static关键字，就表示该方法不会被实例继承，而是直接通过类来调用
-  static defaultMatrix() {
-    return new THREE.Matrix4();
-  }
+class Child extends Parent {
+    constructor(name = 'child'){
+        super(name); //子类必须在constructor方法中调用super方法，否则新建实例时会报错。
+        this.age = 20;
+    }
 }
 
-// 类的所有实例共享一个原型对象
-let skin = new SkinnedMesh();
-// 静态方法需要直接通过类调用
-SkinnedMesh.defaultMatrix
+let parent = new Parent('pp');
+console.log(parent); // Parent { name: 'pp' }
+
+Parent.tell(); // tell.....
+
+let child = new Child('cc');
+console.log(child); // Child { name: 'cc', age: 20 }
+child.name1 = 'cc2'; // name changed to -- cc2
+child.name1;  // get parent name is -- cc2
 ```
+
+在ES6中，内置的Array,Date,DOM Element可以被继承以拓展了。
 
 ## 模板字符串
 - 模板字符串定义在两个反撇号中；
@@ -192,6 +183,8 @@ let es6 = {
 - `Object.entries(obj)` 遍历，返回键值对数组。（与for-in区别在于 for-in也枚举原型链中的属性）
 
 
+
+
 ## [数组的扩展](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/Array_api.md)
 - 转化为数组：`from() of()`
 - 查找数组：  `find() findIndex() includes()`  (其他：filter every some)
@@ -199,14 +192,22 @@ let es6 = {
 - 填充数组：  `fill() copyWithin()`
 
 
+
+
 ## 数值的扩展
-1. `Number.isInteger()` &nbsp;&nbsp;判断整数 （如果接收的非数字，返回false，如'25'-->false）
-2. `Number.MAX_SAFE_INTEGER` / `Number.MIN_SAFE_INTEGER`
-可以在计算中安全使用的最大/最小整数，安全数能精确表示
-3. `Number.isSafeInteger()` &nbsp;&nbsp;范围是-(2^53 - 1) ~ 2^53 - 1,即最大最小安全整数之间
-4. `Math.trunc()` 返回整数部分
-5. `Math.sign()`  返回-1（负数），0，1（正数）。（如果接收的非数字，先转为数字然后返回-1/0/1，否则返回NaN ）
-6. `Math.cbrt()` 立方根
+1. 二进制八进制字面量
+```js
+0b111110111 === 503 // true  二进制
+0o767 === 503 // true  八进制
+```
+2. `Number.isInteger()` &nbsp;&nbsp;判断整数 （如果接收的非数字，返回false，如'25'-->false）  
+`Number.MAX_SAFE_INTEGER`  可以在计算中安全使用的最大整数,安全数能精确表示
+`Number.MIN_SAFE_INTEGER`
+`Number.isSafeInteger()` &nbsp;&nbsp;范围是-(2^53 - 1) ~ 2^53 - 1,即最大最小安全整数之间
+
+3. `Math.trunc()` 返回整数部分  
+`Math.sign()`  返回-1（负数），0，1（正数）。（如果接收的非数字，先转为数字然后返回-1/0/1，否则返回NaN）  
+`Math.cbrt()` 立方根  
 
 另：MAX_VALUE 是使用双精度浮点表示表示的最大数字。 大于该值即Infinity，介于安全值和Infinity之间数的无法精确表示。
 
@@ -273,6 +274,8 @@ function factorial (n, total = 1) {
 factorial(5) // 120 函数此时只有一个参数
 ```
 
+
+
 ## Map + Set + Weakmap + Weakset：新的数据结构
 
 **Set** 对象允许存储任何类型的唯一值。
@@ -315,11 +318,6 @@ console.log(wm.get(s)); // { extra: 42 }
 ```
 
 
-
-
-
-## Symbols：新的基本类型，独一无二的值
-
 ## Iterators + For..Of
 遍历器（Iterator）是一种接口，为各种不同的数据结构提供统一的访问机制。在ES6中，有三类数据结构原生具备Iterator接口：数组、某些类似数组的对象、Set和Map结构。调用这个接口，就会返回一个遍历器对象。
 作用：
@@ -354,11 +352,15 @@ for(let key of obj){
 
 
 
+## Symbols：新的基本类型，独一无二的值
+
+
+
+
+
 ## Generators
 ## Modules
-## Map Set WeakMap WeakSet
 ## Proxies
-## Symbols
 ## Promise
 ## Reflect API
 ## Tail Calls
