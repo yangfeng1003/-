@@ -7,6 +7,7 @@
 - 对象的扩展（简洁表示  属性表达式  Object新增api）
 - 数组的扩展 
 - 数值的扩展 (二进制八进制字面量 Number Math)
+- 正则的扩展
 - 函数的扩展（箭头函数  默认参数  rest参数与扩展运算符  尾调用）
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Map + Set + Weakmap + Weakset：新的数据结构
@@ -211,6 +212,47 @@ let es6 = {
 `Math.cbrt()` 立方根  
 
 另：MAX_VALUE 是使用双精度浮点表示表示的最大数字。 大于该值即Infinity，介于安全值和Infinity之间数的无法精确表示。
+
+
+## 正则的扩展  
+修饰符：  
+i	执行对大小写不敏感的匹配  
+g	执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）  
+m	执行多行匹配（multiline ）  
+y   全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始。(粘连sticky)  
+```js
+// es5表示方式，下面二者等价
+let regex = new RegExp("xyz",'i');
+let regex2 = new RegExp(/xyz/i);  //一个正则表达式参数  
+
+//es6表示方式
+let regex3 = new RegExp(/xyz/ig,'i'); //允许第二个参数，新的修饰符覆盖原有正则表达式中的修饰符
+```
+ES6为正则表达式新增了`flags`属性，会返回正则表达式的修饰符。
+```js
+console.log(regex3.flags); //i  
+```
+
+y修饰符的作用与g修饰符类似，也是全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始。
+不同之处在于，g修饰符只要剩余位置中存在匹配就可，而y修饰符确保匹配必须从剩余的第一个位置开始，这也就是“粘连”的涵义。
+```js
+var s = 'aaa_aa_a';
+var r1 = /a+/g;
+var r2 = /a+/y;
+
+r1.exec(s); // ["aaa"]
+r2.exec(s); // ["aaa"]
+
+r1.exec(s); // ["aa"]
+r2.exec(s); // null
+```
+与y修饰符相匹配，ES6的正则对象多了`sticky`属性，表示是否设置了y修饰符。
+```js
+console.log(r1.sticky,r2.sticky); // false true
+```
+u修饰符（含义是Unicode）
+用来正确处理大于\uFFFF的Unicode字符。也就是说，会正确处理四个字节的UTF-16编码。
+
 
 ## 函数的扩展
 #### ...的使用（rest与扩展运算符）
