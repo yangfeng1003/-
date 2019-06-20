@@ -2,12 +2,12 @@
 - Let + const:命名声明的新方式
 - Arrows,箭头函数
 - Classes，类
-- Template strings：模板字符串
 - Destructuring：解构赋值
 - 对象的扩展（简洁表示  属性表达式  Object新增api）
 - 数组的扩展 
 - 数值的扩展 (二进制八进制字面量 Number Math)
 - 正则的扩展
+- 字符串的扩展（模板字符串 Unicode表示法 api）
 - 函数的扩展（箭头函数  默认参数  rest参数与扩展运算符  尾调用）
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Map + Set + Weakmap + Weakset：新的数据结构
@@ -80,14 +80,6 @@ console.log(child); // Child { name: 'cc', age: 20 }
 child.name1 = 'cc2'; // name changed to -- cc2
 child.name1;  // get parent name is -- cc2
 ```
-
-在ES6中，内置的Array,Date,DOM Element可以被继承以拓展了。
-
-## 模板字符串
-- 模板字符串定义在两个反撇号中；
-- 在模板字符串中可以直接换行，格式会得以保留；
-- 通过${ }可以很方便的在模板字符串中添加变量；
-
 
 ## 解构赋值
 解构使用模式匹配的方法绑定变量和值。解构在绑定失败的时会实现软绑定，即没有匹配值时返回`undefined`
@@ -232,7 +224,6 @@ ES6为正则表达式新增了`flags`属性，会返回正则表达式的修饰�
 ```js
 console.log(regex3.flags); //i  
 ```
-
 y修饰符的作用与g修饰符类似，也是全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始。
 不同之处在于，g修饰符只要剩余位置中存在匹配就可，而y修饰符确保匹配必须从剩余的第一个位置开始，这也就是“粘连”的涵义。
 ```js
@@ -252,6 +243,34 @@ console.log(r1.sticky,r2.sticky); // false true
 ```
 u修饰符（含义是Unicode）
 用来正确处理大于\uFFFF的Unicode字符。也就是说，会正确处理四个字节的UTF-16编码。
+
+## 字符串的扩展（模板字符串 Unicode表示法 api)
+#### 模板字符串
+- 模板字符串定义在两个反撇号中；
+- 在模板字符串中可以直接换行，格式会得以保留；
+- 通过${ }可以很方便的在模板字符串中添加变量；
+
+#### Unicode表示法
+```js
+console.log('\u0061');  //a 小于两个字节
+console.log('\u20BB'); //₻7
+console.log('\u20BB7'); //₻7 大于两个字节，但是将前4位作为一部分
+console.log('\u{20BB7}');//𠮷 大于两个字节，加上大括号来表示
+
+let a = '𠮷';
+console.log(a.length); //2 每两个字节length为1，它大于两个字节，所以length为2
+```
+#### api： includes  startsWith  endsWith  repeat  padStart  String.raw
+```js
+let str = "string";
+console.log(str.includes('r'));      //true  字符串包含字符
+console.log(str.startsWith('s'));    //true  字符串起始字符
+console.log(str.endsWith('g'));      //true  字符串终止字符
+console.log(str.repeat(3));          //stringstringstring  字符串重复
+console.log('1'.padStart(2,'0'));    //01  长度两位，不够在前面补0
+console.log(`Hi\n${1+2}`);           //第一行Hi 第二行3  实现转义，注意raw后面没有括号
+console.log(String.raw`Hi\n${1+2}`); //Hi\n3  
+```
 
 
 ## 函数的扩展
