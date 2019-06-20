@@ -366,7 +366,7 @@ console.log(abc2 === abc3);  //false
 let abc4 = Symbol.for('key');
 console.log(abc3 === abc4);  //true
 ```
-//应用场景：
+应用场景：作为对象属性的标识符
 ```js
 let obj = {
     [abc]:'abc',
@@ -375,15 +375,15 @@ let obj = {
 };   
 console.log(obj);  // { abc: 123, hello: 'world', [Symbol(key)]: 'abc' }
 ```
-Symbol类型的key是不能通过Object.keys()或者for...in来枚举的,当使用JSON.stringify()将对象转换成JSON字符串的时候，Symbol属性也会被排除在输出内容之外。
+Symbol类型的key是**不能通过Object.keys()或者for...in来枚举**的,当使用JSON.stringify()将对象转换成JSON字符串的时候，Symbol属性也会被排除在输出内容之外。
 ```js
 console.log(Object.keys(obj));                   // [ 'abc', 'hello' ]
 ```
-1.使用`getOwnPropertySymbols`得到symbol属性
+1.使用**getOwnPropertySymbols**得到symbol属性
 ```js
 console.log(Object.getOwnPropertySymbols(obj));  // [ Symbol(key) ]
 ```
-2.使用`Reflect`可以得到所有属性
+2.使用**Reflect**可以得到所有属性
 ```js
 console.log(Reflect.ownKeys(obj));               // [ 'abc', 'hello', Symbol(key) ]
 ```
