@@ -379,11 +379,11 @@ Symbol类型的key是**不能通过Object.keys()或者for...in来枚举**的,当
 ```js
 console.log(Object.keys(obj));                   // [ 'abc', 'hello' ]
 ```
-1.使用**`getOwnPropertySymbols`**得到symbol属性
+1.使用**getOwnPropertySymbols**得到symbol属性
 ```js
 console.log(Object.getOwnPropertySymbols(obj));  // [ Symbol(key) ]
 ```
-2.使用**`Reflect`**可以得到所有属性
+2.使用**Reflect**可以得到所有属性
 ```js
 console.log(Reflect.ownKeys(obj));               // [ 'abc', 'hello', Symbol(key) ]
 ```
