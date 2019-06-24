@@ -35,9 +35,6 @@ const用于指定固定值，因此必须初始化`（如果是引用类型，�
 此外如果箭头函数如果定义在另一个函数里面，箭头函数会共享它父函数的arguments变量。
 
 
-
-
-
 ## 对象的扩展
 **1. 简洁表示：**
 ```js
@@ -63,16 +60,12 @@ let es6 = {
 - `Object.entries(obj)` 遍历，返回键值对数组。（与for-in区别在于 for-in也枚举原型链中的属性）
 
 
-
-
 ## [数组的扩展](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/Array_api.md)
 - 转化为数组：`from() of()`
 - 查找数组：  `find() findIndex() includes()`  (其他：filter every some)
 - 遍历:      `keys() values() entries()`
 - 填充数组：  `fill() copyWithin()`   
 >这里是arr.keys() 如果是对象,要写成Object.keys(obj)
-
-
 
 
 ## 数值的扩展
@@ -91,8 +84,6 @@ let es6 = {
 `Math.cbrt()` 立方根  
 
 另：MAX_VALUE 是使用双精度浮点表示表示的最大数字。 大于该值即Infinity，介于安全值和Infinity之间数的无法精确表示。
-
-
 
 
 ## 函数的扩展
