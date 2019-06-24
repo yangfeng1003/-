@@ -15,6 +15,7 @@ https://www.cnblogs.com/formercoding/p/5881304.html
 作用域链： 作用域链是函数被创建的作用域中对象的集合（由当前环境栈中对应的变量对象组成）。   
 作用域的用途，是保证对执行环境有权访问的所有变量和函数的有序访问。作用域前端，始终是当前执行的代码所在的环境对应的变量对象（如果该环境是函数，则将其活动对象作为变量对象），下一变量对象来自包含环境（包含当前还行环境的环境），而再下一变量对象则来自下一包含环境，一直延续到全局执行环境。
 
+
 作用域与变量对象，执行环境的关系：变量或函数具有作用域的原因，就是在环境中定义的变量仅保存在了该执行环境对应的对象变量中，执行环境在环境栈中弹出之后，作用域链中找不到该对变量对象。
 
 ```js
@@ -33,6 +34,7 @@ alert("Color is now "+color); //red
 ```
 <img src="https://img-blog.csdnimg.cn/20190624084858296.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzMyMjIwOA==,size_16,color_FFFFFF,t_70" width="30%" height="30%"> 
 图中矩形表示特定的执行环境（window的执行环境，changeColor()的执行环境，swapColors()的执行环境，分别对应window、changeColor()、swapColors()的变量对象，windows的变量对象包括color变量和changeColor()函数。），内部执行环境可以通过作用域链访问所有的外部环境，因此在swapColors()内部可以访问到其他两个环境中的所有变量，而changeColor()的作用域链只包含它自己的变量对象和全局变量对象。
+
 
 
 补充：执行环境只与函数的声明及定义位置有关
