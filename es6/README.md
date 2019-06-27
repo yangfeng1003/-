@@ -1,26 +1,23 @@
 # ES6新特性列表
-- Let + const:命名声明的新方式
-- Arrows,箭头函数
-- Classes，类
-- Destructuring：解构赋值
+- Let + const
+- 箭头函数
+- Class，类
+- 解构赋值
+- 字符串的扩展（模板字符串 Unicode表示 api）
 - 对象的扩展（简洁表示  属性表达式  Object新增api）
 - 数组的扩展 
 - 数值的扩展 (二进制八进制字面量 Number Math)
 - 正则的扩展
-- 字符串的扩展（模板字符串 Unicode表示法 api）
 - 函数的扩展（箭头函数  默认参数  rest参数与扩展运算符  尾调用）
 - Default + rest + spread：参数默认值，rest参数,扩展运算符
 - Map + Set + Weakmap + Weakset：新的数据结构
-- Symbols：新的基本类型，独一无二的值
+- Symbol：新的基本类型，独一无二的值
 - Iterators + for..of：遍历
-- Proxies：代理器
+- Proxy：代理器
 - Reflect
-- Promises
-- Generators：生成器
-- Unicode：更广泛的编码支持
-- Modules：语言层面上支持的模块机制
-- Module loaders：模块加载器
-
+- Promise
+- Generator：生成器
+- Decorator：修饰器是一个函数，用来修改类的行为。修饰器只能用于类和类的方法
 
 
 ## Let 和 Const
@@ -33,31 +30,6 @@ const用于指定固定值，因此必须初始化`（如果是引用类型，�
 ## 箭头函数
 箭头函数使用类似于`=>`这样的语法定义函数，不过其最大特点在于**和父作用域具有一样的this**。（箭头函数中没有this。如果你在箭头函数中使用了this，那么该this一定就是外层的this）使用箭头函数时再也不用担心this跳来跳去了。
 此外如果箭头函数如果定义在另一个函数里面，箭头函数会共享它父函数的arguments变量。
-
-
-## 对象的扩展
-**1. 简洁表示：**
-```js
-let o = 1,k = 2;
-let es5 = {
-    o:o,
-    k:k,
-    methodes5:function(){ }
-};
-let es6 = {
-    o,   //属性简写
-    k,
-    methodes6(){}   //方法简写
-};
-```
-**2. 属性表达式：**
-属性名可以使用表达式形式
-
-**3. ES6中对象新增的api：**
-- 可以通过`__proto__`读取或设置当前对象的prototype对象;
-- 使用`Object.is({},{})`判断两个对象是否完全相等，类似===;
-- `Object.assign(target, source1, source2)`合并对象；（1. 浅拷贝 2. 只包括对象自身可枚举的属性）
-- `Object.entries(obj)` 遍历，返回键值对数组。（与for-in区别在于 for-in也枚举原型链中的属性）
 
 
 ## [数组的扩展](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/Array_api.md)
