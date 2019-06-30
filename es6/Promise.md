@@ -79,7 +79,8 @@ p.then(null,function(s){
 ```
 
 #### 实现Promise
-首先要理解Promise规范： 这篇讲的很好
+首先要理解Promise规范： 这篇讲的很好，一定一定要看懂才能往下进行（文章中的event Loop很重要。同样是异步方法process.nextTick中的回调函数就会在setTimeout和setImmediate中的回调函数之前执行？
+> 这就和task和microtask的机制有关了(执行栈，事件循环，任务队列与微任务队列。那么Microtask是在什么时候执行的呢？JS会在每一轮loop结束，也就是stack中的代码全部执行完毕时，去执行Microtask Queue中的任务。当Microtask Queue中的任务全部执行完成后再从Task Queue中取出下一个任务。即微任务队列优先于任务队列。  以Task方式运行的有setTimeOut、setImmediate,而已MicroTask方式运行的有process.nextTick、MutationObserver。这也就是上面的例子中process.nextTick中回调优先执行的原因。因为process.nextTick中回调被添加到了Microtask Queue,而setTimeOut和setImmediate中的回调则被添加到了Task Queue的末尾，他们在之后的几轮loop中才会被执行。) [文章](https://www.jianshu.com/go-wild?ac=2&url=https%3A%2F%2Fjakearchibald.com%2F2015%2Ftasks-microtasks-queues-and-schedules%2F)）
 Promises/A+  [Promise的实现与标准](https://www.jianshu.com/p/4d266538f364)   
 1. 为什么Promise能写成链式的，在.then之后还能接着.then？基于这一点可以判断出then方法return的是一个Promise
 2. 原则上，promise.then(onResolved, onRejected)里的这两项函数需要异步调用。
@@ -106,6 +107,8 @@ in promise
 script end
 resolve:  reslove promise
 ```
+这里涉及到event loop，microtask
+
 
 实现代码
 ```js
