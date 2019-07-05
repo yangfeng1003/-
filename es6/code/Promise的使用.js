@@ -1,3 +1,5 @@
+Promise的使用
+
 console.log('start');
 
 {

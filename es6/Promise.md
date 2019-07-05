@@ -79,228 +79,142 @@ p.then(null,function(s){
 ```
 
 #### 实现Promise
-首先要理解Promise规范： 这篇讲的很好，一定一定要看懂才能往下进行（文章中的event Loop很重要。同样是异步方法process.nextTick中的回调函数就会在setTimeout和setImmediate中的回调函数之前执行？
-> 这就和task和microtask的机制有关了(执行栈，事件循环，任务队列与微任务队列。那么Microtask是在什么时候执行的呢？JS会在每一轮loop结束，也就是stack中的代码全部执行完毕时，去执行Microtask Queue中的任务。当Microtask Queue中的任务全部执行完成后再从Task Queue中取出下一个任务。即微任务队列优先于任务队列。  以Task方式运行的有setTimeOut、setImmediate,而已MicroTask方式运行的有process.nextTick、MutationObserver。这也就是上面的例子中process.nextTick中回调优先执行的原因。因为process.nextTick中回调被添加到了Microtask Queue,而setTimeOut和setImmediate中的回调则被添加到了Task Queue的末尾，他们在之后的几轮loop中才会被执行。) [文章](https://www.jianshu.com/go-wild?ac=2&url=https%3A%2F%2Fjakearchibald.com%2F2015%2Ftasks-microtasks-queues-and-schedules%2F)）
-Promises/A+  [Promise的实现与标准](https://www.jianshu.com/p/4d266538f364)   
-1. 为什么Promise能写成链式的，在.then之后还能接着.then？基于这一点可以判断出then方法return的是一个Promise
-2. 原则上，promise.then(onResolved, onRejected)里的这两项函数需要异步调用。
+首先要理解Promise规范： [Promise的实现与标准](https://www.jianshu.com/p/4d266538f364)  
+resolve方法的方法体内部要把等待它resolve的回调函数都执行完（this.resolveCallback[]）（这也就是他为什么看起来是异步变成同步了，因为代码是一直往下执行的，pending状态的promise对象执行then方法，then方法题内部会给这个对象增加一个onResolved,onRejected的回调方法，等什么时候pengding状态改变了，然后继续再执行刚刚then里面增加的回调方法）  
+思考：  
+1. 为什么Promise能写成链式的，在.then之后还能接着.then？    
+基于这一点可以判断出then方法return的是一个Promise
+2. promise.then(onResolved, onRejected)里的这两项函数需要异步调用。  前提是了解：[js事件队列（为什么Promise.then的方法要加上setTimeout被延迟）](https://github.com/yangfeng1003/Knowledge/blob/master/js%E5%9F%BA%E7%A1%80/%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97.md) 
+3. 每个Promise对象都可以在其上多次调用then方法，而每次调用then返回的Promise的状态取决于那一次调用then时传入参数的返回值。then()方法的x，即onResolved/onRejected的返回值。
+调试时可以看到，每个pending状态的promise对象后面有then()的，都会放到回调数组里，数组长度为1.那么这么多链式的then()去哪了呢？因为每个then()都会返回一个新的promise对象，所以后面的then()都是在前一个then()的回调里，而不是第一个promise的回调数组中。那么什么时候能看到回调数组长度>1呢，是对一个promise添加多个then()的情况。例如：promise.then(...); promise.then(......);
+})
+4. 注意所有的resolve()都要用try/catch包裹
+5. then()方法的参数是两个function，如果不是（比如.then(console.log(111)）,必须先转化为function。还有一个好处是可以实现then()值的穿透  
+6. 不要写this，因为它是会变化的，应该在一开始定义一个变量保存this  
+
+
+
+#### [Promise实现代码](https://github.com/yangfeng1003/Knowledge/tree/master/es6/code/Promise/MyPromise.js)
+
+其他：
+1. promise如何终止？假设Big ERROR的出现让我们完全没有必要运行后面所有的代码了，但链式调用的后面有catch或then，都不可避免的会进入某一个catch或then里面  
+
+解决：可以在发生Big ERROR后return一个Promise，但这个Promise的函数什么也不做，这就意味着这个Promise将永远处于pending，后面的代码也就一直不会执行了
 ```js
-console.log('script start');
+new Promise(function(resolve, reject) {
+  resolve(42)
+})
+  .then(function(value) {
+    // "Big ERROR!!!"
+    return new Promise(function(){})
+  })
+  .catch()
+  .then()
+  .catch()
+  ```
 
-let promise = new Promise(function(resolve, reject) {
-    console.log('in promise');
-    resolve('reslove promise');
-});
+  2. Promise链上返回的最后一个Promise出错了怎么办?
 
-promise.then(function(value) {
-    console.log('resolve: ', value);
-}, function(reason) {
-    console.log('reason: ', reason);
-});
-
-console.log('script end')
-```
-输出如下。可以看到传给then方法的回调是在最后执行的，所以可以判断出new Promise(function)中的function是同步执行的，而then(reslove,reject)中的resolve或reject函数是异步执行的。
+把方法done链到Promise链的最后，它就能够捕获前面未处理的错误，这其实跟在每个链后面加上catch没有太大的区别，只是它相当于提供了一个不会出错的catch链，我们可以这么实现done方法：
 ```js
-script start
-in promise
-script end
-resolve:  reslove promise
-```
-这里涉及到event loop，microtask
-
-
-实现代码
-```js
-function Promise(executor) {
-    var self = this;
-    self.status = 'pending';
-    self.onResolvedCallback = [];
-    self.onRejectedCallback = [];
-
-    function resolve(value) {
-        if (value instanceof Promise) {
-            return value.then(resolve, reject)
-        }
-        setTimeout(function() { // 异步执行所有的回调函数
-            if (self.status === 'pending') {
-                self.status = 'resolved';
-                self.data = value;
-                for (var i = 0; i < self.onResolvedCallback.length; i++) {
-                    self.onResolvedCallback[i](value)  /*同一个Promise的then方法可以被调用多次，当该Promise状态变为resolved或rejected状态时，注册在该Promise上的回调应该根据注册的顺序被调用。*/
-                }
-            }
-        })
-    }
-    function reject(reason) {
-        setTimeout(function() { // 异步执行所有的回调函数
-            if (self.status === 'pending') {
-                self.status = 'rejected';
-                self.data = reason;
-                for (var i = 0; i < self.onRejectedCallback.length; i++) {
-                    self.onRejectedCallback[i](reason)
-                }
-            }
-        })
-    }
-    try {
-        executor(resolve, reject)
-    } catch (reason) {
-        reject(reason)
-    }
+Promise.prototype.done = function(){
+  return this.catch(function(e) { // 此处一定要确保这个函数不能再出错
+    console.error(e)
+  })
 }
-/*
-resolvePromise函数即为根据x的值来决定promise2的状态的函数
-也即标准中的[Promise Resolution Procedure](https://promisesaplus.com/#point-47)
-x为`promise2 = promise1.then(onResolved, onRejected)`里`onResolved/onRejected`的返回值
-`resolve`和`reject`实际上是`promise2`的`executor`的两个实参，因为很难挂在其它的地方，所以一并传进来。
-*/
-function resolvePromise(promise2, x, resolve, reject) {
-    var then;
-    var thenCalledOrThrow = false;
-/*1.如果x和promise是同一个对象的引用(x === promise),那么reject promise并将一个TypeError赋值给reason*/
-    if (promise2 === x) {
-        return reject(new TypeError('Chaining cycle detected for promise!'))
-    }
-/*2.如果x是一个Promise(x instanceof Promise),那么promise的状态入下：
-
-2.1 如果x处于pending状态那么promise也处于pending状态，直到x状态变为resolved或rejected。
-2.2 如果x处于resolved状态，那么用x的value来resolve promise。
-2.3 如果x处于rejected状态，那么用x的reason来reject promise*/
-/* 如果x的状态还没有确定，那么它是有可能被一个thenable决定最终状态和值的.所以这里需要做一下处理，而不能一概的以为它会被一个“正常”的值resolve*/
-    if (x instanceof Promise) {
-        if (x.status === 'pending') { //because x could resolved by a Promise Object
-            x.then(function(v) {
-                resolvePromise(promise2, v, resolve, reject)
-            }, reject)
-        } else { //but if it is resolved, it will never resolved by a Promise Object but a static value;
-            x.then(resolve, reject)
-        }
-        return
-    }
-/*3.如果x是一个对象或function
-
-3.1 如果获取属性x.then的过程中抛出异常e，那么将e作为reason来reject promise
-3.2 如果x.then是一个function，那么调用x.then传入参数resolvePromise和rejectPromise
-3.2.1 如果resolvePromise被调用且传入的参数为y，那么再次执行此操作，参数为(promise, y)
-3.2.2 如果rejectPromise被调用且传入的参数r，那么将r作为reason来reject promise
-3.2.3 如果resolvePromise和rejectPromise同时被调用，或者被调用多次，那么优先处理第一次调用，之后的调用都应该被忽略。
-3.2.4 如果调用x.then抛出了异常e，若在抛出异常前resolvePromise或rejectPromise已经被调用，那么忽略异常即可。若resolvePromise或rejectPromise没有被调用过，那么将e作为reason来reject promise
-3.3 如果x.then不是一个function，那么用x来resolve promise (x是对象)*/
-    if ((x !== null) && ((typeof x === 'object') || (typeof x === 'function'))) {
-        try {
-            then = x.then; //because x.then could be a getter.标准2.3.3.1 因为x.then有可能是一个getter，这种情况下多次读取就有可能产生副作用。（即要判断它的类型，又要调用它，这就是两次读取）
-            if (typeof then === 'function') { // 2.3.3.3
-                then.call(x, function rs(y) { // 2.3.3.3.1
-                    if (thenCalledOrThrow) return;// 2.3.3.3.3 即这三处谁选执行就以谁的结果为准
-                    thenCalledOrThrow = true;
-                    return resolvePromise(promise2, y, resolve, reject)
-                }, function rj(r) {
-                    if (thenCalledOrThrow) return; // 2.3.3.3.3 即这三处谁选执行就以谁的结果为准
-                    thenCalledOrThrow = true;
-                    return reject(r)
-                })
-            } else {
-                resolve(x)
-            }
-        } catch (e) {
-            if (thenCalledOrThrow) return; // 2.3.3.3.3 即这三处谁选执行就以谁的结果为准
-            thenCalledOrThrow = true;
-            return reject(e)
-        }
-    } else { /*// 但如果这个Promise的状态已经确定了,x既不是对象也不是function,它有一个“正常”的值，而不是一个thenable，所以这里直接取它的状态*/
-        resolve(x)
-    }
-}
-
-Promise.prototype.then = function(onResolved, onRejected) {
-    var self = this;
-    var promise2;
-    onResolved = typeof onResolved === 'function' ? onResolved : function(v) {
-        return v
-    };
-    onRejected = typeof onRejected === 'function' ? onRejected : function(r) {
-        throw r
-    };
-    /*如果promise1是resolved状态且onResolved不是一个function那么promise2必须resolved，并且promise2的value必须与promise1相同*/
-    if (self.status === 'resolved') {
-        return promise2 = new Promise(function(resolve, reject) {
-            setTimeout(function() { // 异步执行onResolved /*onResolved和onRejected需要通过异步的方式执行，可以用“macro-task”或“micro-task”机制来执行。*/
-                try {
-                    var x = onResolved(self.data);
-                    resolvePromise(promise2, x, resolve, reject)
-                } catch (reason) {
-                    reject(reason)
-                }
-            })
-        })
-    }
-    /*如果promise1是rejected状态且onRejected不是一个function那么promise2必须rejected，并且promise2的reason必须与promise1相同*/
-    if (self.status === 'rejected') {
-        return promise2 = new Promise(function(resolve, reject) {
-            setTimeout(function() { // 异步执行onRejected
-                try {
-                    var x = onRejected(self.data);
-                    resolvePromise(promise2, x, resolve, reject)
-                } catch (reason) {
-                    reject(reason)
-                }
-            })
-        })
-    }
-    if (self.status === 'pending') {
-        // 这里之所以没有异步执行，是因为这些函数必然会被resolve或reject调用，而resolve或reject函数里的内容已是异步执行，构造函数里的定义
-        return promise2 = new Promise(function(resolve, reject) {
-            self.onResolvedCallback.push(function(value) {
-                try {
-                    var x = onResolved(value);
-                    resolvePromise(promise2, x, resolve, reject)
-                } catch (r) {
-                    reject(r)
-                }
-            });
-            self.onRejectedCallback.push(function(reason) {
-                try {
-                    var x = onRejected(reason);
-                    resolvePromise(promise2, x, resolve, reject)
-                } catch (r) {
-                    reject(r)
-                }
-            })
-        })
-    }
-};
-
-Promise.prototype.catch = function(onRejected) {
-    return this.then(null, onRejected)
-};
-
-/*Promise.deferred = Promise.defer = function() {
-    var dfd = {};
-    dfd.promise = new Promise(function(resolve, reject) {
-        dfd.resolve = resolve;
-        dfd.reject = reject
-    });
-    return dfd
-};*/
-
-//测试
-let p = new Promise(function (resolve,reject) {
-    console.log('start');
-    // setTimeout(()=>resolve('2'),1000)
-    resolve(1)
-})
-.then(result=>console.log(result),reason => console.log(reason))
-// .catch(error=>console.log(error));
-/*
-let p = new Promise(function (resolve,reject) {
-    console.log('start');
-    setTimeout(()=>resolve('2'),1000)
-})
-.then(result=>{
-    console.log(result);
-    return new Promise(resolve=>{resolve('3')})
-})
-.then(result=>console.log(result))
-.catch(error=>console.log(error));*/
 ```
+
+面试题目（求输出结果）
+```js
+Promise.resolve(1)
+.then((res) => {
+console.log(res)
+return 2
+})
+.catch((err) => {
+return 3
+})
+.then((res) => {
+console.log(res)
+})
+
+//输出
+1
+2
+```
+解释：promise 可以链式调用。提起链式调用我们通常会想到通过 return this 实现，不过 Promise 并不是这样实现的。promise 每次调用 .then 或者 .catch 都会返回一个新的 promise，从而实现了链式调用。
+```js
+Promise.resolve()
+.then(() => {
+return new Error('error!!!')
+})
+.then((res) => {
+console.log('then: ', res)
+})
+.catch((err) => {
+console.log('catch: ', err)
+})
+
+//输出
+then:  Error: error!!!
+```
+解释：因为这里只是new Error，没有抛出异常，认为没有出错，所以还会执行then(),而且是then()对应的onResolved函数
+如果换成throw new Error('error!!!')，则会输出 catch:  Error: error!!!。因为他会执行onRejected函数
+
+```js
+Promise.resolve(1)
+.then(2)
+.then(Promise.resolve(3))
+.then(console.log)
+
+//输出
+1 //发生值的穿透
+```
+```js
+Promise.resolve()
+    .then(function success (res) {
+        throw new Error('error')
+    }, function fail1 (e) {
+        console.error('fail1: ', e)
+    })
+    .catch(function fail2 (e) {
+        console.error('fail2: ', e)
+    })
+
+//输出
+fail2:  Error: error
+```
+解释：.then 的第二个参数：onRejected函数捕获不了第一个onResolved函数抛出的错误。发生的错误被下一个then（）捕获，这里catch（）相当于then(null,onRejected).
+```js
+process.nextTick(() => {
+console.log('nextTick')
+})
+Promise.resolve()
+.then(() => {
+console.log('then')
+})
+setImmediate(() => {
+console.log('setImmediate')
+})
+console.log('end')
+
+//输出  （参考事件队列先后顺序）
+end
+nextTick
+then
+setImmediate
+```
+
+参考：  
+https://www.jianshu.com/p/4d266538f364    Promise标准    
+用es5实现promise代码：   
+https://github.com/nzhl/promise  这个很好。里面有完整剖析 以及代码   
+https://github.com/xieranmaya/blog/issues/3  
+https://www.cnblogs.com/huansky/p/6064402.html  介绍了回调过程  
+https://www.jianshu.com/p/c633a22f9e8c  详细介绍了then()每一步的递进  
+https://blog.csdn.net/qq_34178990/article/details/81078906  整体代码  
+https://juejin.im/post/5aab286a6fb9a028d3752621 代码验证  
+https://github.com/promises-aplus/promises-tests/   代码验证  
+> 代码验证 promises-tests ，方法很简单 
+> npm i -g promises-aplus-tests  
+> promises-aplus-tests Promise.js  
