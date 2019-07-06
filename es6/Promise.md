@@ -206,6 +206,42 @@ nextTick
 then
 setImmediate
 ```
+```js
+async function async1(){
+    console.log('async1 start')
+    await async2()
+    console.log('async1 end')
+}
+async function async2(){
+    console.log('async2')
+}
+console.log('script start')
+setTimeout(function(){
+    console.log('setTimeout') 
+},0)  
+async1();
+new Promise(function(resolve){
+    console.log('promise1')
+    resolve();
+}).then(function(){
+    console.log('promise2')
+})
+console.log('script end')
+```
+输出：
+```js
+script start
+async1 start
+async2
+promise1
+script end
+promise2
+async1 end
+setTimeout
+```
+async 函数返回一个 Promise 对象，当函数执行的时候，一旦遇到 await就会先返回，等到触发的异步操作完成，再接着执行函数体内后面的语句。而await的返回值：返回 Promise 对象的处理结果。如果等待的不是 Promise 对象，则返回该值本身。  
+执行到 async1 这个函数时，首先会打印出“async1 start”。执行到 await async2()，发现 async2 也是个 async 定义的函数，所以直接执行了“console.log('async2')”，同时async2返回了一个Promise，划重点：此时返回的Promise会被放入到回调队列中等待，await会让出线程（js是单线程还用我介绍吗），接下来就会跳出 async1函数 继续往下执行。注意之后执行到async2返回的promise对象是有一个resolve（）的，所以又是一个异步。因此在promise2之后输出async1 end
+原文：https://www.cnblogs.com/wangfupeng1988/p/3994065.html
 
 参考：  
 https://www.jianshu.com/p/4d266538f364    Promise标准    

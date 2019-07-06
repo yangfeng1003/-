@@ -1,3 +1,5 @@
+http://es6.ruanyifeng.com/   ECMAScript 6 入门 作者：阮一峰
+
 # ES6新特性列表
 - Let + const
 - 箭头函数
