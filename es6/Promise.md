@@ -51,7 +51,7 @@ p的状态有两种：
 
 #### Promise.race
 ```js
-let p = Promise.all([p1,p2,p3]);
+let p = Promise.race([p1,p2,p3]);
 ```
 参数同上。 只要p1,p2,p3有一个率先改变状态，p的状态就跟着变。率先改变的Promise实例的返回值，会传递给p的回调函数。 
 
@@ -78,7 +78,8 @@ p.then(null,function(s){
 });
 ```
 
-#### 实现Promise
+### 实现Promise
+
 首先要理解Promise规范： [Promise的实现与标准](https://www.jianshu.com/p/4d266538f364)  
 resolve方法的方法体内部要把等待它resolve的回调函数都执行完（this.resolveCallback[]）（这也就是他为什么看起来是异步变成同步了，因为代码是一直往下执行的，pending状态的promise对象执行then方法，then方法题内部会给这个对象增加一个onResolved,onRejected的回调方法，等什么时候pengding状态改变了，然后继续再执行刚刚then里面增加的回调方法）  
 思考：  
@@ -168,8 +169,9 @@ Promise.resolve(1)
 .then(console.log)
 
 //输出
-1 //发生值的穿透
+1        //发生值的穿透
 ```
+.then 或者 .catch 的参数期望是函数，传入非函数则会发生值穿透。如果题目换成.then(value=>Promise.resolve(3))，则最终会输出3
 ```js
 Promise.resolve()
     .then(function success (res) {
