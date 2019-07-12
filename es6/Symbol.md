@@ -1,4 +1,10 @@
 ## Symbols：新的基本类型，独一无二的值
+```js
+console.log(Symbol() === Symbol());  //false
+let a = Symbol(1);
+let b = Symbol(2);
+console.log(a === b);  //false
+```
 
 每个从`Symbol()`返回的symbol值都是唯一的。一个symbol值能作为对象属性的标识符；这是该数据类型仅有的目的。  
 `Symbol.for(key)` 方法会根据给定的键 key，来从运行时的 symbol 注册表中找到对应的 symbol，如果找到了，则返回它，否则，新建一个与该键关联的 symbol，并放入全局 symbol 注册表中。

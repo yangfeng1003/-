@@ -1,0 +1,57 @@
+```js
+/*指定的 this 值并不一定是该函数执行时真正的 this 值，
+如果这个函数在非严格模式下运行，则指定为 null 和 undefined 的 this 值会自动指向全局对象（浏览器中就是 window 对象），
+同时值为原始值（数字，字符串，布尔值）的 this 会指向该原始值的自动包装对象。*/
+Function.prototype.MyCall = function (obj, ...rest) {
+    if(obj === null || typeof obj === "undefined") {
+        obj = global;
+    }
+    else if(typeof obj != "object") {
+        obj = Object(obj);
+    }
+    let _f = Symbol();
+    obj[_f] = this;         //获取一个调用call()的方法的副本。this 即 [Functimon: add]
+    let res = obj[_f](...rest);  //执行这个副本方法
+    delete obj[_f];
+    return res;
+};
+
+Function.prototype.MyApply = function (obj, list) {
+    if(obj === null || typeof obj === "undefined") {
+        obj = global;
+    }
+    else if(typeof obj != "object") {
+        obj = Object(obj);
+    }
+    let _f = Symbol();
+    obj[_f] = this;
+    let res = obj[_f](...list);
+    delete obj[_f];
+    return res;
+};
+
+Function.prototype.MyBind = function (obj, ...rest) {
+    if(obj === null || typeof obj === "undefined") {
+        obj = global;
+    }
+    else if(typeof obj != "object") {
+        obj = Object(obj);
+    }
+    let that = this;    //保存this，因为bind返回的是一个函数（闭包），执行这个返回函数的this已发生变化
+    return function () {
+        return that.MyCall(obj, ...rest);
+    }
+};
+
+global.a = 3;
+const myObj = {
+    a:1
+};
+function add(b,c){
+    return  this.a + b + c
+}
+console.log(add.MyCall(myObj,2,3));  //6  1+2+3
+console.log(add.MyApply(null,[4,5]));  //12   3+4+5
+console.log(add.MyBind(myObj,4,5)());  //10  1+4+5 //MyBind方法内部this是add{}，但是调用返回的方法时，this已经变为global，所以要在bind方法内存储this。
+
+```
