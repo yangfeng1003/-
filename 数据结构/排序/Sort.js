@@ -31,7 +31,7 @@ function selectSort(arr){
 
 //3.插入排序
 function insertSort(arr){
-    for(let i=0;i<arr.length;i++){
+    for(let i=1;i<arr.length;i++){
         let j=i;
         let temp = arr[i];
         if(j>0){

@@ -1,0 +1,105 @@
+```java
+package feng;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+
+class TreeNode {
+    int val;
+    TreeNode left;
+	TreeNode right;
+	TreeNode(int x) { val = x; }   //负责初始化
+ }
+
+
+
+public class Tree {
+	//构造二叉树
+	public static TreeNode getTreeNode() {
+		TreeNode myTree = new TreeNode(3);
+		TreeNode myTree2 = new TreeNode(2);
+		TreeNode myTree1 = new TreeNode(1);
+		myTree1.right = myTree2;
+		myTree.left = myTree1;
+		return myTree;
+	}
+	public static void main(String[] args) {
+		TreeNode root = getTreeNode();
+		List list = inorderTraversal2(root);
+		for(int i=0;i<list.size();i++) {
+			System.out.println(list.get(i));
+		}
+	}
+	//遍历
+	public List<Integer> inorderTraversal(TreeNode root) {
+		List list = new ArrayList();
+		if(root == null) {
+			return list;
+		}else {
+			inorder(root,list);
+		}
+		return list;
+	}
+	//先序遍历
+	public void preorder(TreeNode root,List list) {
+		if(root!=null) {
+			list.add(root.val);
+			if(root.left!=null) {
+				preorder(root.left,list);
+		    }
+            if(root.right!=null){
+            	preorder(root.right,list);
+		    }
+		}
+	}
+	//中序遍历
+	public void inorder(TreeNode root,List list) {
+		if(root!=null) {
+			if(root.left!=null) {
+				inorder(root.left,list);
+		    }
+			list.add(root.val);
+            if(root.right!=null){
+            	inorder(root.right,list);
+		    }
+		}
+	}
+
+	//非递归中序遍历
+	public static List inorderTraversal2(TreeNode root) {
+		List list = new ArrayList<>();
+		Stack<TreeNode> st = new Stack<TreeNode>(); 
+		while(root!=null || !st.empty()) {
+			//一路向左
+			while(root != null) {
+				st.push(root);
+				root = root.left;
+			}
+			//回退
+			if(!st.empty()) {
+				root = st.pop();
+				list.add(root.val);
+				root = root.right;
+			}
+		}
+		return list;
+	}
+}
+/*public List<Integer> inorderTraversal(TreeNode root) {
+List list = new ArrayList();
+if(root == null) {
+	return list;
+}else {
+	if(root.left!=null) {
+		list.add(inorderTraversal(root.left));
+    }
+	list.add(root.val);
+    if(root.right!=null){
+    	list.add(inorderTraversal(root.right));
+    }
+}
+return list;
+}*/  //这种方法错误，会返回一个嵌套的数组。输入[1,null,2,3]	,输出	[1,[[3],2]],	预期结果[1,3,2]
+```
