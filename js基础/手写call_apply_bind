@@ -55,3 +55,60 @@ console.log(add.MyApply(null,[4,5]));  //12   3+4+5
 console.log(add.MyBind(myObj,4,5)());  //10  1+4+5 //MyBind方法内部this是add{}，但是调用返回的方法时，this已经变为global，所以要在bind方法内存储this。
 
 ```
+
+
+js中当函数执行bind后再次执行bind或call时会怎样
+https://blog.csdn.net/theanarkh/article/details/55040306
+
+强缓存
+https://www.jianshu.com/p/9c95db596df5
+
+
+防抖节流
+https://www.jianshu.com/p/c8b86b09daf0
+
+
+CSS预处理语言总结比较
+http://witmax.cn/css-extension-languages.html
+
+seo引擎优化
+
+
+
+http-equiv  
+content-type
+expires
+refresh
+set-cookie
+把 content 属性关联到 HTTP 头部。
+name    
+author
+description
+keywords
+generator
+revised
+others
+把 content 属性关联到一个名称。
+scheme  some_text   定义用于翻译 content 属性值的格式。
+name 属性
+name 属性提供了名称/值对中的名称。HTML 和 XHTML 标签都没有指定任何预先定义的 <meta> 名称。通常情况下，您可以自由使用对自己和源文档的读者来说富有意义的名称。
+
+"keywords" 是一个经常被用到的名称。它为文档定义了一组关键字。某些搜索引擎在遇到这些关键字时，会用这些关键字对文档进行分类。
+
+类似这样的 meta 标签可能对于进入搜索引擎的索引有帮助：
+
+<meta name="keywords" content="HTML,ASP,PHP,SQL">
+
+
+
+Object.defineProperty()
+https://www.jianshu.com/p/8fe1382ba135
+configrable 描述属性是否配置，以及可否删除
+enumerable 描述属性是否会出现在for in 或者 Object.keys()的遍历中
+configurable: false 时，不能删除当前属性，且不能重新配置当前属性的描述符(有一个小小的意外：可以把writable的状态由true改为false,但是无法由false改为true),但是在writable: true的情况下，可以改变value的值
+configurable: true时，可以删除当前属性，可以配置当前属性所有描述符。
+
+作者：Weastsea
+链接：https://www.jianshu.com/p/8fe1382ba135
+来源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
