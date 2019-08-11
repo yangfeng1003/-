@@ -6,7 +6,12 @@ function MyPromise(fn){
     that.state = 'pending';
     that.resolveCallback = [];
     that.rejectCallback = [];
-
+    try{
+        fn(resolve,reject);// resolve/reject函数能不能定义在构造函数外？如果定义在构造函数外，那么在这里调用的时候，这句就变成resolve.bind(this)，而bind又会返回一个函数，相当于还是写在了构造函数内部
+    }catch (e) {
+        reject(e);
+    }
+    
     function resolve(value){
         if(value instanceof MyPromise){        //一开始漏掉了   
             //这里是因为如果resolve（）的参数本身就是一个promise，称pp，我们需要先让括号pp里面给出一个结果，然后再继续执行。
@@ -30,12 +35,6 @@ function MyPromise(fn){
                 that.rejectCallback[i](reason);
             }
         }
-    }
-
-    try{
-        fn(resolve,reject);// resolve/reject函数能不能定义在构造函数外？如果定义在构造函数外，那么在这里调用的时候，这句就变成resolve.bind(this)，而bind又会返回一个函数，相当于还是写在了构造函数内部
-    }catch (e) {
-        reject(e);
     }
 }
 // 每个Promise对象都可以在其上多次调用then方法，而每次调用then返回的Promise的状态取决于那一次调用then时传入参数的返回值
