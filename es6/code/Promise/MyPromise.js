@@ -8,7 +8,10 @@ function MyPromise(fn){
     that.rejectCallback = [];
 
     function resolve(value){
-        if(value instanceof MyPromise){        //一开始漏掉了
+        if(value instanceof MyPromise){        //一开始漏掉了   
+            //这里是因为如果resolve（）的参数本身就是一个promise，称pp，我们需要先让括号pp里面给出一个结果，然后再继续执行。
+            //万一括号里面就报错了呢，比如括号里的pp出现错误状态变为rejected，那么我们虽然有resolve(pp),但是还应该
+            //让它冒泡到下一个then（onfulfilled，onrejected）的onrejected中，那么直接执行pp.then()不就是我们想要的吗，then（）根据pp的状态决定执行哪个函数
             return value.then(resolve,reject);
         }
         if(that.state === 'pending'){
